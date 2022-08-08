@@ -1,18 +1,18 @@
-import { GET_ORDER_LIST, GET_PRODUCT_LIST, RESET_ORDER_LIST, SCROLL_LOADING_STATUS } from "../../actions/GetProductList";
+import {GET_POKEMON_LIST, SCROLL_LOADING_STATUS } from "../../actions/GetPokemon";
 const initialState = {
-    getProductResult: false,
-    getProductLoading: true,
-    getProductError: false,
+    getPokemonResult: false,
+    getPokemonLoading: true,
+    getPokemonError: false,
     scrollLoading: false
 }
 const OrderList = (state = initialState, action) => {
     switch (action.type) {
-        case GET_PRODUCT_LIST:
+        case GET_POKEMON_LIST:
             return {
                 ...state,
-                getProductResult: action.payload.data,
-                getProductLoading: action.payload.loading,
-                getProductError: action.payload.errorMessage,
+                getPokemonResult: action.payload.data,
+                getPokemonLoading: action.payload.loading,
+                getPokemonError: action.payload.errorMessage,
                 scrollLoading:action.payload.scrollloading
             }
         case SCROLL_LOADING_STATUS:

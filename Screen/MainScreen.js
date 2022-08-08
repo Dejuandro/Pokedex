@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Image, ScrollView, ActivityIndicator, TouchableOpacity,StatusBar, SafeAreaView, Dimensions, Platform } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
-import { GetProductList, AddOrder, ResetOrderList } from '../Redux/actions/GetProductList';
+import { getPokemonList, AddOrder, ResetOrderList } from '../Redux/actions/GetPokemon';
 import ModaFullCustom from './Modal';
 import styles from '../Global/styles';
 import CustomColors from '../Global/Color'
@@ -24,9 +24,9 @@ export default function MainScreen() {
   const [SelectedMenuDetail, setSelectedMenuDetail]=useState('about')
 
   const {
-    getProductResult,
-    getProductLoading,
-    getProductError,
+    getPokemonResult,
+    getPokemonLoading,
+    getPokemonError,
     scrollLoading
   } = useSelector((state) => state.OrderReducer)
 
@@ -39,7 +39,7 @@ export default function MainScreen() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(GetProductList(Limit, Offeset))
+    dispatch(getPokemonList(Limit, Offeset))
   }, [])
 
   const ColorList = [
@@ -80,15 +80,16 @@ export default function MainScreen() {
   ]
 
   useEffect(() => {
-    // console.log(getProductResult)
-    if(getProductResult){
-      setSearchedList(getProductResult)
-      setOffeset(getProductResult.length)
+    // console.log(getPokemonResult)
+    if(getPokemonResult){
+      setSearchedList(getPokemonResult)
+      setOffeset(getPokemonResult.length)
     }
-  }, [getProductResult])
+  }, [getPokemonResult])
 
-  function RenderListCake() {
-    return (
+  function RenderListPokemon() {
+    if(SearchedList[0]){
+      return (
       SearchedList.map((data, idx) => {
         // console.log(data)
         return (
@@ -105,25 +106,32 @@ export default function MainScreen() {
             <Text style={styles.PokeName}>{data.name}</Text>
             {data.types.map((type, idxtype) => {
               return (
-                <View key={idxtype}>
-                  <Text style={styles.PokeDetail}>{type.type.name}</Text>
-                </View>
+                <View key={idxtype} style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', marginVertical: 5, width: 60, alignItems: 'center', borderRadius: 5, padding: 5 }} >
+                <Text style={[styles.PokeDetail,{fontSize:10}]}>{type.type.name.toUpperCase()}</Text>
+              </View>
               )
             })}
             </View>
             
         <Image
-          style={{width: 60, height: 60}}
+          style={{width: 65, height: 65, resizeMode:"contain"}}
           source={{uri: data.image}} />
           </TouchableOpacity>
         )
       })
     )
+  } else{
+    return(
+      <View style={{alignItems:'center', alignSelf:'center', width:'100%', marginTop:20}}>
+        <Text>No Result</Text>
+      </View>
+    )
+  }
   }
 
   async function GetMorePokemon() {
     console.log('GetMorePokemon')
-    dispatch(GetProductList(Limit, Offeset, getProductResult))
+    dispatch(getPokemonList(Limit, Offeset, getPokemonResult))
   }
 
   function RenderDetailPokemon() {
@@ -268,7 +276,7 @@ export default function MainScreen() {
  async function SearchFunction(text) {
     if (text) {
       setisSearching(true)
-        const newData = getProductResult.filter(
+        const newData = getPokemonResult.filter(
             function (item) {
               const itemDataName = item.name? item.name.toUpperCase(): ''.toUpperCase();
               const itemDataType = item.types[0].type.name? item.types[0].type.name.toUpperCase(): ''.toUpperCase();
@@ -281,7 +289,7 @@ export default function MainScreen() {
             setSearchValue(text)
     } else {
       setisSearching(false)
-        setSearchedList(getProductResult)
+        setSearchedList(getPokemonResult)
         setSearchValue(text)
     }
 }
@@ -318,9 +326,9 @@ export default function MainScreen() {
           }
         }}>
           <View >
-            {getProductLoading ? <ActivityIndicator /> :
+            {getPokemonLoading ? <ActivityIndicator /> :
               <View style={styles.ContainListCardBox}>
-                {RenderListCake()}
+                {RenderListPokemon()}
               </View>}
 
             {scrollLoading ? <ActivityIndicator style={{ margin: 20 }} /> : null}
@@ -330,7 +338,6 @@ export default function MainScreen() {
         <ModaFullCustom
           isVisible={isModalDetail}
           title={'Pokedex Detail'}
-          subtitle={'This is the detail of each cake'}
           body={RenderDetailPokemon()}
           closeModal={() => {
             setisModalDetail(false)

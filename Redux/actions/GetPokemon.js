@@ -1,12 +1,10 @@
 
 import { GetPokemonList, GetPokemonDetail } from "../../api_config"
-export const GET_PRODUCT_LIST = "GET_PRODUCT_LIST"
-export const GET_ORDER_LIST = "GET_ORDER_LIST"
-export const RESET_ORDER_LIST = "RESET_ORDER_LIST"
+export const GET_POKEMON_LIST = "GET_POKEMON_LIST"
 export const SCROLL_LOADING_STATUS = "SCROLL_LOADING_STATUS"
 
 
-export const GetProductList = (limit,CurrentLimit, CurrentData) => {
+export const getPokemonList = (limit,CurrentLimit, CurrentData) => {
     return async (dispatch) => {
         
         if (CurrentLimit == 0) {
@@ -20,7 +18,7 @@ export const GetProductList = (limit,CurrentLimit, CurrentData) => {
                 PokemonList[i].image = EachPokemonDetail.sprites.versions["generation-iii"]["emerald"].front_default
             }
             await    dispatch({
-                type: GET_PRODUCT_LIST,
+                type: GET_POKEMON_LIST,
                 payload: {
                     loading: false,
                     data: PokemonList,
@@ -46,7 +44,7 @@ export const GetProductList = (limit,CurrentLimit, CurrentData) => {
             }
             const newPokemonList = [...CurrentData, ...PokemonList]
             await dispatch({
-                type: GET_PRODUCT_LIST,
+                type: GET_POKEMON_LIST,
                 payload: {
                     loading: false,
                     data: newPokemonList,
@@ -57,20 +55,6 @@ export const GetProductList = (limit,CurrentLimit, CurrentData) => {
         }
             //loading
    
-    }
-}
-
-export const AddOrder = (data) => {
-    return (dispatch) => {
-        // data[0] == Data Product && data[1] == Data New Order
-        dispatch({
-            type: GET_ORDER_LIST,
-            payload: {
-                loading: false,
-                data: data,
-                errorMessage: false
-            }
-        }) 
     }
 }
 
